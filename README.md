@@ -28,6 +28,20 @@ To install a specific version:
 & ([scriptblock]::Create((irm https://raw.githubusercontent.com/annaji-msft/aca/main/install.ps1))) -Version v0.1.0-preview
 ```
 
+## Uninstall
+
+### Linux / macOS
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/annaji-msft/aca/main/install.sh | sh -s -- --uninstall
+```
+
+### Windows (PowerShell)
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/annaji-msft/aca/main/install.ps1))) -Uninstall
+```
+
 ## Supported Platforms
 
 | Platform | Architecture |

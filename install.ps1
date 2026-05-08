@@ -1,12 +1,38 @@
 # ACA CLI Installer for Windows
 param(
     [string]$Version = "latest",
-    [string]$InstallDir = "$env:USERPROFILE\.aca\bin"
+    [string]$InstallDir = "$env:USERPROFILE\.aca\bin",
+    [switch]$Uninstall
 )
 
 $ErrorActionPreference = "Stop"
 $Repo = "annaji-msft/aca"
 $BinaryName = "aca"
+
+function Uninstall-Aca {
+    $ExePath = Join-Path $InstallDir "$BinaryName.exe"
+    if (-not (Test-Path $ExePath)) {
+        Write-Host "$BinaryName is not installed at $ExePath"
+        return
+    }
+
+    Remove-Item -Force $ExePath
+    Write-Host "Removed $ExePath"
+
+    # Clean up PATH and directory if empty
+    $Remaining = Get-ChildItem $InstallDir -ErrorAction SilentlyContinue
+    if (-not $Remaining) {
+        Remove-Item -Force $InstallDir -ErrorAction SilentlyContinue
+        $UserPath = [Environment]::GetEnvironmentVariable("PATH", "User")
+        if ($UserPath -like "*$InstallDir*") {
+            $NewPath = ($UserPath -split ';' | Where-Object { $_ -ne $InstallDir }) -join ';'
+            [Environment]::SetEnvironmentVariable("PATH", $NewPath, "User")
+            Write-Host "Removed $InstallDir from PATH."
+        }
+    }
+
+    Write-Host "$BinaryName uninstalled successfully."
+}
 
 function Install-Aca {
     $Platform = "win-x64"
@@ -52,4 +78,8 @@ function Install-Aca {
     Write-Host "Restart your terminal, then run '$BinaryName --help' to get started."
 }
 
-Install-Aca
+if ($Uninstall) {
+    Uninstall-Aca
+} else {
+    Install-Aca
+}

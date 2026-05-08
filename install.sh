@@ -35,6 +35,23 @@ get_download_url() {
     fi
 }
 
+uninstall() {
+    TARGET="${INSTALL_DIR}/${BINARY_NAME}"
+    if [ ! -f "$TARGET" ]; then
+        echo "${BINARY_NAME} is not installed at ${TARGET}"
+        exit 0
+    fi
+
+    if [ -w "$INSTALL_DIR" ]; then
+        rm -f "$TARGET"
+    else
+        echo "Removing ${TARGET} (requires sudo)..."
+        sudo rm -f "$TARGET"
+    fi
+
+    echo "${BINARY_NAME} uninstalled successfully from ${TARGET}"
+}
+
 install() {
     detect_platform
     echo "Detected platform: ${PLATFORM}"
@@ -63,4 +80,7 @@ install() {
     echo "Run '${BINARY_NAME} --help' to get started."
 }
 
-install
+case "${1:-}" in
+    --uninstall) uninstall ;;
+    *)           install ;;
+esac
