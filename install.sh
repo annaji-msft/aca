@@ -29,7 +29,7 @@ detect_platform() {
 
 get_download_url() {
     if [ "$VERSION" = "latest" ]; then
-        VERSION="$(curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest" | grep '"tag_name"' | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/')"
+        VERSION="$(curl -fsSL "https://api.github.com/repos/${REPO}/releases" | grep '"tag_name"' | head -1 | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/')"
         if [ -z "$VERSION" ]; then
             echo "Error: Could not determine latest version"; exit 1
         fi
