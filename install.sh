@@ -29,10 +29,13 @@ detect_platform() {
 
 get_download_url() {
     if [ "$VERSION" = "latest" ]; then
-        URL="https://github.com/${REPO}/releases/latest/download/${BINARY_NAME}-${PLATFORM}.tar.gz"
-    else
-        URL="https://github.com/${REPO}/releases/download/${VERSION}/${BINARY_NAME}-${VERSION}-${PLATFORM}.tar.gz"
+        VERSION="$(curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest" | grep '"tag_name"' | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/')"
+        if [ -z "$VERSION" ]; then
+            echo "Error: Could not determine latest version"; exit 1
+        fi
+        echo "Latest version: ${VERSION}"
     fi
+    URL="https://github.com/${REPO}/releases/download/${VERSION}/${BINARY_NAME}-${VERSION}-${PLATFORM}.tar.gz"
 }
 
 uninstall() {

@@ -38,10 +38,11 @@ function Install-Aca {
     $Platform = "win-x64"
 
     if ($Version -eq "latest") {
-        $Url = "https://github.com/$Repo/releases/latest/download/$BinaryName-$Platform.zip"
-    } else {
-        $Url = "https://github.com/$Repo/releases/download/$Version/$BinaryName-$Version-$Platform.zip"
+        $Release = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/latest" -UseBasicParsing
+        $Version = $Release.tag_name
+        Write-Host "Latest version: $Version"
     }
+    $Url = "https://github.com/$Repo/releases/download/$Version/$BinaryName-$Version-$Platform.zip"
 
     Write-Host "Downloading $BinaryName from $Url..."
 
