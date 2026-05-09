@@ -69,6 +69,11 @@ install() {
     tar -xzf "${TMP_DIR}/${BINARY_NAME}.tar.gz" -C "$TMP_DIR"
 
     # Install to INSTALL_DIR (try sudo if needed)
+    if [ ! -d "$INSTALL_DIR" ]; then
+        echo "Creating ${INSTALL_DIR} (requires sudo)..."
+        sudo mkdir -p "$INSTALL_DIR"
+    fi
+
     if [ -w "$INSTALL_DIR" ]; then
         cp "${TMP_DIR}/${BINARY_NAME}" "${INSTALL_DIR}/${BINARY_NAME}"
         chmod +x "${INSTALL_DIR}/${BINARY_NAME}"
