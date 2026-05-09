@@ -2,6 +2,11 @@
 
 Command-line interface for Azure Container Apps.
 
+## Prerequisites
+
+- **Azure CLI** (`az`) must be installed — [Install Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
+- Run `az login` at least once before using `aca`. The CLI uses Azure CLI authentication.
+
 ## Installation
 
 ### Linux / macOS

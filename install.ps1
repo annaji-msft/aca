@@ -76,6 +76,11 @@ function Install-Aca {
 
     Write-Host ""
     Write-Host "$BinaryName installed successfully to $InstallDir\$BinaryName.exe"
+    Write-Host ""
+    Write-Host "Prerequisites:"
+    Write-Host "  Azure CLI (az) must be installed and logged in."
+    Write-Host "  Run 'az login' if you haven't already."
+    Write-Host ""
     Write-Host "Restart your terminal, then run '$BinaryName --help' to get started."
 }
 

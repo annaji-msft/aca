@@ -80,6 +80,11 @@ install() {
 
     echo ""
     echo "${BINARY_NAME} installed successfully to ${INSTALL_DIR}/${BINARY_NAME}"
+    echo ""
+    echo "Prerequisites:"
+    echo "  Azure CLI (az) must be installed and logged in."
+    echo "  Run 'az login' if you haven't already."
+    echo ""
     echo "Run '${BINARY_NAME} --help' to get started."
 }
 
