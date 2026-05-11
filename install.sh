@@ -29,9 +29,12 @@ detect_platform() {
 
 get_download_url() {
     if [ "$VERSION" = "latest" ]; then
-        VERSION="$(curl -fsSL "https://api.github.com/repos/${REPO}/releases" | grep '"tag_name"' | head -1 | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/')"
+        # Use GitHub releases Atom feed (not rate-limited like the API)
+        VERSION="$(curl -fsSL "https://github.com/${REPO}/releases.atom" | grep -oP '(?<=releases/tag/)[^"<]+' | head -1)"
         if [ -z "$VERSION" ]; then
-            echo "Error: Could not determine latest version"; exit 1
+            echo "Error: Could not determine latest version."
+            echo "Specify a version manually: ACA_VERSION=v0.1.0-preview $0"
+            exit 1
         fi
         echo "Latest version: ${VERSION}"
     fi
