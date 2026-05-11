@@ -38,9 +38,9 @@ function Install-Aca {
     $Platform = "win-x64"
 
     if ($Version -eq "latest") {
-        # Use GitHub releases Atom feed (not rate-limited like the API)
-        $Feed = Invoke-WebRequest -Uri "https://github.com/$Repo/releases.atom" -UseBasicParsing
-        if ($Feed.Content -match 'releases/tag/([^"<]+)') {
+        # Scrape the latest release tag from the GitHub releases page (no API, no rate limits)
+        $Page = Invoke-WebRequest -Uri "https://github.com/$Repo/releases" -UseBasicParsing
+        if ($Page.Content -match '/releases/tag/([^"]+)') {
             $Version = $Matches[1]
         } else {
             throw "Could not determine latest version. Specify manually: -Version v0.1.0-preview"
