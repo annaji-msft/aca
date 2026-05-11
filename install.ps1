@@ -38,11 +38,9 @@ function Install-Aca {
     $Platform = "win-x64"
 
     if ($Version -eq "latest") {
-        # Scrape the latest release tag from the GitHub releases page (no API, no rate limits)
-        $Page = Invoke-WebRequest -Uri "https://github.com/$Repo/releases" -UseBasicParsing
-        if ($Page.Content -match '/releases/tag/([^"]+)') {
-            $Version = $Matches[1]
-        } else {
+        # Fetch latest version from version file (no API, no rate limits)
+        $Version = (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/$Repo/main/latest-version.txt" -UseBasicParsing).Content.Trim()
+        if (-not $Version) {
             throw "Could not determine latest version. Specify manually: -Version v0.1.0-preview"
         }
         Write-Host "Latest version: $Version"

@@ -29,8 +29,8 @@ detect_platform() {
 
 get_download_url() {
     if [ "$VERSION" = "latest" ]; then
-        # Scrape the latest release tag from the GitHub releases page (no API, no rate limits)
-        VERSION="$(curl -fsSL "https://github.com/${REPO}/releases" | grep -oP '/releases/tag/\K[^"]+' | head -1)"
+        # Fetch latest version from version file (no API, no rate limits)
+        VERSION="$(curl -fsSL "https://raw.githubusercontent.com/${REPO}/main/latest-version.txt" | tr -d '[:space:]')"
         if [ -z "$VERSION" ]; then
             echo "Error: Could not determine latest version."
             echo "Specify a version manually: ACA_VERSION=v0.1.0-preview $0"
