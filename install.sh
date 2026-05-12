@@ -43,16 +43,28 @@ get_download_url() {
 
 uninstall() {
     TARGET="${INSTALL_DIR}/${BINARY_NAME}"
-    if [ ! -f "$TARGET" ]; then
-        echo "${BINARY_NAME} is not installed at ${TARGET}"
+    ACA_HOME="${HOME}/.aca"
+
+    if [ ! -f "$TARGET" ] && [ ! -d "$ACA_HOME" ]; then
+        echo "${BINARY_NAME} is not installed."
         exit 0
     fi
 
-    if [ -w "$INSTALL_DIR" ]; then
-        rm -f "$TARGET"
-    else
-        echo "Removing ${TARGET} (requires sudo)..."
-        sudo rm -f "$TARGET"
+    # Remove binary
+    if [ -f "$TARGET" ]; then
+        if [ -w "$INSTALL_DIR" ]; then
+            rm -f "$TARGET"
+        else
+            echo "Removing ${TARGET} (requires sudo)..."
+            sudo rm -f "$TARGET"
+        fi
+        echo "Removed ${TARGET}"
+    fi
+
+    # Remove config directory
+    if [ -d "$ACA_HOME" ]; then
+        rm -rf "$ACA_HOME"
+        echo "Removed ${ACA_HOME} (configuration)."
     fi
 
     echo "${BINARY_NAME} uninstalled successfully from ${TARGET}"

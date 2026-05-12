@@ -10,25 +10,25 @@ $Repo = "annaji-msft/aca"
 $BinaryName = "aca"
 
 function Uninstall-Aca {
+    $AcaHome = Split-Path $InstallDir -Parent  # ~/.aca
     $ExePath = Join-Path $InstallDir "$BinaryName.exe"
-    if (-not (Test-Path $ExePath)) {
-        Write-Host "$BinaryName is not installed at $ExePath"
+    if (-not (Test-Path $ExePath) -and -not (Test-Path $AcaHome)) {
+        Write-Host "$BinaryName is not installed."
         return
     }
 
-    Remove-Item -Force $ExePath
-    Write-Host "Removed $ExePath"
+    # Remove PATH entry
+    $UserPath = [Environment]::GetEnvironmentVariable("PATH", "User")
+    if ($UserPath -like "*$InstallDir*") {
+        $NewPath = ($UserPath -split ';' | Where-Object { $_ -ne $InstallDir }) -join ';'
+        [Environment]::SetEnvironmentVariable("PATH", $NewPath, "User")
+        Write-Host "Removed $InstallDir from PATH."
+    }
 
-    # Clean up PATH and directory if empty
-    $Remaining = Get-ChildItem $InstallDir -ErrorAction SilentlyContinue
-    if (-not $Remaining) {
-        Remove-Item -Force $InstallDir -ErrorAction SilentlyContinue
-        $UserPath = [Environment]::GetEnvironmentVariable("PATH", "User")
-        if ($UserPath -like "*$InstallDir*") {
-            $NewPath = ($UserPath -split ';' | Where-Object { $_ -ne $InstallDir }) -join ';'
-            [Environment]::SetEnvironmentVariable("PATH", $NewPath, "User")
-            Write-Host "Removed $InstallDir from PATH."
-        }
+    # Remove entire .aca directory (binary + config)
+    if (Test-Path $AcaHome) {
+        Remove-Item -Recurse -Force $AcaHome
+        Write-Host "Removed $AcaHome (binary and configuration)."
     }
 
     Write-Host "$BinaryName uninstalled successfully."
